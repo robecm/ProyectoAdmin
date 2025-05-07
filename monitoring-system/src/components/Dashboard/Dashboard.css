@@ -5,110 +5,140 @@ body {
 }
 
 .dashboard {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background-color: #000;
+  background: #181818;
+  min-height: 100vh;
+  width: 100vw;
 }
 
 .header {
-  background-color: #2d9cdb;
-  color: black;
-  padding: 10px 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  height: 40px;
+  justify-content: space-between;
+  padding: 1.5em 2em 0.5em 2em;
+  background: #222236;
+  color: #f2f2f2;
+  border-bottom: 2px solid #313152;
+}
+
+.left-panel, .right-panel {
+  display: flex;
+  align-items: center;
+}
+
+.user-icon, .settings-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 7px;
+  background: #1b1b30;
+  padding: 0.4em;
+}
+
+.settings-icon {
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+.settings-icon:hover {
+  filter: brightness(1.4);
 }
 
 .title {
+  font-size: 2rem;
   font-weight: bold;
-  font-size: 18px;
   text-align: center;
-  flex-grow: 1;
+  letter-spacing: 1px;
+  flex: 1;
 }
 
 .cameras-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 5px;
-  padding: 5px;
-  height: calc(100vh - 60px);
+  grid-gap: 1.5em;
+  padding: 2em 2.5em;
+  width: 100%;
+  max-width: 1450px;
+  margin: auto;
+  justify-items: stretch; /* Ensures .camera fills grid cell */
+  align-items: stretch;
 }
 
 .camera {
-  background-color: #333;
+  background: #252525;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+  padding: 1em 1em 2.5em 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 270px;
+  min-width: 0;
+  min-height: 0;
   position: relative;
-  border: 1px solid #000;
-  color: white;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .camera-label {
-  position: absolute;
-  top: 5px;
-  left: 5px;
+  color: #f2f2f2;
+  font-size: 1.1em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.2em;
+  align-self: flex-start;
 }
 
-.rec-indicator {
-  position: absolute;
-  top: 5px;
-  right: 35px;
-  color: red;
-  font-weight: bold;
-  font-size: 12px;
+.camera-feed {
+  flex-shrink: 0;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  background: #111;
+  border-radius: 6px;
+  display: block;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+  margin: 0.3em 0 0.3em 0;
+  align-self: stretch;
 }
 
 .rec-icon {
   position: absolute;
-  top: 5px;
-  right: 55px;
-  width: 15px;
-  height: 15px;
-}
-
-.user-icon, .settings-icon {
+  top: 14px;
+  right: 15px;
   width: 30px;
   height: 30px;
-  cursor: pointer;
+  z-index: 2;
 }
 
-.camera {
-  position: relative;
-  overflow: hidden;
-  background-color: #333;
-  border: 1px solid #000;
-  color: white;
-}
-
-.camera-feed {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.rec-indicator {
+  position: absolute;
+  top: 16px;
+  right: 55px;
+  color: #ff4040;
+  background: #212121;
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 0.92em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  z-index: 2;
 }
 
 .person-count {
-  position: absolute;
-  bottom: 5px;
-  right: 5px;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: yellow;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 12px;
-  font-weight: bold;
+  color: #ececec;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 0.5em;
+  text-align: center;
+  width: 100%;
 }
 
-.dashboard.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f0f0;
-}
-
-.loading-text {
-  font-size: 24px;
-  color: #333;
-  font-weight: bold;
+.dashboard.loading, .loading-text {
+  min-height: 70vh;
+  text-align: center;
+  font-size: 1.5em;
+  color: #f6cd26;
+  padding-top: 16vh;
+  letter-spacing: 2px;
+  width: 100%;
 }

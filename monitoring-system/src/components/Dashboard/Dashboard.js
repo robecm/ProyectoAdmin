@@ -1,4 +1,3 @@
-// monitoring-system/src/components/Dashboard/Dashboard.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
@@ -14,7 +13,6 @@ function Dashboard() {
   const streamUrlsRef = useRef({});
   const streamRefs = useRef([]);
 
-  // Generate stable stream URLs only once when component mounts
   useEffect(() => {
     setLoading(true);
     const urls = {};
@@ -23,23 +21,17 @@ function Dashboard() {
       urls[cameraId] = `http://localhost:5000/video_feed/${cameraId}`;
     }
     streamUrlsRef.current = urls;
-
-    // Initialize stream references array
     streamRefs.current = Array(9).fill(null);
-
-    // Preload connection to server
     fetch('http://localhost:5000/status')
       .then(() => setLoading(false))
       .catch(err => {
         console.error("Error connecting to server:", err);
         setLoading(false);
       });
-
     return () => {
-      // Clean up image connections when component unmounts
       streamRefs.current.forEach(img => {
         if (img) {
-          img.src = ''; // Cancel the request
+          img.src = '';
           img.onload = null;
           img.onerror = null;
         }
@@ -48,7 +40,6 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    // Fetch person counts at a reasonable interval
     countTimerRef.current = setInterval(() => {
       fetch('http://localhost:5000/detection_counts')
         .then(response => response.json())
@@ -62,7 +53,6 @@ function Dashboard() {
   }, []);
 
   const handleSettingsClick = () => {
-    // Clean up connections before navigating
     streamRefs.current.forEach(img => {
       if (img) img.src = '';
     });
@@ -109,11 +99,8 @@ function Dashboard() {
                 alt={`Camera feed ${i + 1}`}
                 ref={el => streamRefs.current[i] = el}
                 onError={(e) => {
-                  // Retry loading on error
                   e.target.onerror = null;
-                  setTimeout(() => {
-                    if (e.target) e.target.src = streamUrl;
-                  }, 2000);
+                  if (e.target) e.target.src = streamUrl;
                 }}
               />
               <img className="rec-icon" src={recIcon} alt="REC" />
