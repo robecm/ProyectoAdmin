@@ -34,6 +34,23 @@ os.makedirs(SUMMARY_EXPORT_DIR, exist_ok=True)
 #       ...
 #   }
 # }
+# URL de conexión a SQLite en la nube
+DATABASE_URL = "sqlitecloud://cbefqdkahz.g5.sqlite.cloud:8860/monitoreodb?apikey=vBkbpoGk9CbdqzO93GadQhUQSUte5zjmev5ahX94f0I"  # Cambia esto por la URL de tu base de datos
+engine = create_engine(DATABASE_URL)
+Base = declarative_base()
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Modelo de la base de datos
+class Detection(Base):
+    __tablename__ = "detections"
+    id = Column(Integer, primary_key=True, index=True)
+    camera_id = Column(String, index=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    person_count = Column(Integer)
+
+# Crear las tablas si no existen
+Base.metadata.create_all(bind=engine)
+
 summary = {}  # Maps date -> camera_id -> hour ("HH") -> int
 
 # ----- Person detector setup -----
@@ -123,6 +140,8 @@ def log_and_export_summary():
     """
     global summary, detection_counts
     last_date_str = None
+    db = SessionLocal()  # Crear una sesión de base de datos
+    #try:
     while True:
         now = datetime.now()
         date_str = now.strftime("%Y-%m-%d")
@@ -139,8 +158,10 @@ def log_and_export_summary():
             summary[date_str][cam][hour_str] += count
 
             # Guardar en la base de datos
-                detection = Detection(camera_id=cam, person_count=count)
-                db.add(detection)
+            detection = Detection(camera_id=cam, person_count=count)
+            db.add(detection)
+        db.commit()
+
 
         # Prepare & write the CSV
         csv_path = os.path.join(SUMMARY_EXPORT_DIR, f"summary_{date_str}.csv")
@@ -160,6 +181,9 @@ def log_and_export_summary():
         if sleep_secs < 0.5:
             sleep_secs = 0.5
         time.sleep(sleep_secs)
+    #finally:
+        db.close()
+
 
 
 @app.route('/detections')
