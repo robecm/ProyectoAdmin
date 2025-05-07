@@ -2,10 +2,15 @@ import os
 import csv
 import threading
 import time
+import sqlitecloud
 from datetime import datetime
 from flask import Flask, Response, jsonify
 import cv2
 import numpy as np
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
 
 app = Flask(__name__)
 
@@ -133,6 +138,10 @@ def log_and_export_summary():
         for cam, count in detection_counts.items():
             summary[date_str][cam][hour_str] += count
 
+            # Guardar en la base de datos
+                detection = Detection(camera_id=cam, person_count=count)
+                db.add(detection)
+
         # Prepare & write the CSV
         csv_path = os.path.join(SUMMARY_EXPORT_DIR, f"summary_{date_str}.csv")
         with open(csv_path, "w", newline="", encoding="utf-8") as f:
@@ -151,6 +160,21 @@ def log_and_export_summary():
         if sleep_secs < 0.5:
             sleep_secs = 0.5
         time.sleep(sleep_secs)
+
+
+@app.route('/detections')
+def get_detections():
+    db = SessionLocal()
+    try:
+        detections = db.query(Detection).all()
+        return jsonify([{
+            "id": d.id,
+            "camera_id": d.camera_id,
+            "timestamp": d.timestamp,
+            "person_count": d.person_count
+        } for d in detections])
+    finally:
+        db.close()
 
 if __name__ == '__main__':
     # Start the background summary logger thread
