@@ -36,7 +36,7 @@ os.makedirs(SUMMARY_EXPORT_DIR, exist_ok=True)
 # }
 
 # URL de conexión a SQLite en la nube
-DATABASE_URL = "sqlitecloud://cbefqdkahz.g5.sqlite.cloud:8860/monitoreodb?apikey=vBkbpoGk9CbdqzO93GadQhUQSUte5zjmev5ahX94f0I"  # Cambia esto por la URL de tu base de datos
+DATABASE_URL = "sqlitecloud://cbefqdkahz.g5.sqlite.cloud:8860/chinook.sqlite?apikey=vBkbpoGk9CbdqzO93GadQhUQSUte5zjmev5ahX94f0I"  
 engine = create_engine(DATABASE_URL)
 Base = declarative_base()
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
