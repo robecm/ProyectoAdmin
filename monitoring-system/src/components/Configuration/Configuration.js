@@ -49,6 +49,20 @@ function Configuration() {
     navigate('/dashboard');
   };
 
+  // ✅ Nueva función para guardar configuración y redirigir
+  const handleGuardarConfiguracion = () => {
+    console.log("Configuración guardada:", {
+      configGeneral,
+      camaras,
+      sensibilidad,
+      frecuencia,
+      zonasInteres,
+      configReportes,
+    });
+
+    navigate('/graficas');
+  };
+
   return (
     <div className="config-page">
       <div className="header">
@@ -92,12 +106,17 @@ function Configuration() {
           </div>
         </div>
 
-        {/* Resto del código de configuración igual que en App.js original */}
+        {/* Configuración de Cámaras */}
         <div className="section">
           <h2>Configuración de Cámaras</h2>
           <div className="input-group">
             <input type="text" placeholder="Nombre de la nueva cámara" value={nuevaCamara} onChange={(e) => setNuevaCamara(e.target.value)} />
-            <button className="submit" onClick={() => setCamaras([...camaras, { id: Date.now(), nombre: nuevaCamara }])}>Agregar Cámara</button>
+            <button className="submit" onClick={() => {
+              if (nuevaCamara.trim() !== "") {
+                setCamaras([...camaras, { id: Date.now(), nombre: nuevaCamara }]);
+                setNuevaCamara("");
+              }
+            }}>Agregar Cámara</button>
           </div>
           <ul>
             {camaras.map((cam) => (
@@ -121,6 +140,7 @@ function Configuration() {
           </div>
         </div>
 
+        {/* Configuración de Reportes */}
         <div className="section">
           <h2>Configuración de Reportes</h2>
           <div className="input-group">
@@ -135,6 +155,13 @@ function Configuration() {
             <label><input type="checkbox" name="comparacionDias" checked={configReportes.analisis.comparacionDias} onChange={handleChangeReportes} /> Comparación con días anteriores</label>
             <label><input type="checkbox" name="clientesPasillo" checked={configReportes.analisis.clientesPasillo} onChange={handleChangeReportes} /> Promedio de clientes por pasillo</label>
           </div>
+        </div>
+
+        {/*  Botón para guardar y navegar */}
+        <div className="input-group">
+          <button className="submit" onClick={handleGuardarConfiguracion}>
+            Guardar configuración y ver gráficas
+          </button>
         </div>
       </div>
     </div>

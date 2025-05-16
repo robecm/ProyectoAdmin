@@ -1,0 +1,253 @@
+/* monitoring-system/src/components/Graficas/Graficas.css */
+.graficas-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f3f4f6;
+  overflow-x: hidden;
+}
+
+.graficas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #333;
+  color: white;
+}
+
+.graficas-header button {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.graficas-header button:hover {
+  background-color: #777;
+}
+
+.graficas-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 70px);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.charts-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  gap: 20px;
+  overflow-y: auto;
+  height: calc(100vh - 70px);
+}
+
+.chart-section {
+  flex: 1 0 calc(50% - 20px);
+  min-width: 300px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.chart-section h2 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.chart-placeholder {
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Bar chart styles */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  height: 200px;
+  width: 100%;
+  padding: 10px 5px 30px 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.bar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bar {
+  width: 80%;
+  background: linear-gradient(to top, #3498db, #2980b9);
+  margin: 0 2px;
+  position: relative;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.3s;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.bar-value {
+  color: white;
+  font-size: 10px;
+  padding: 2px 0;
+  position: relative;
+  top: 2px;
+}
+
+.bar-label {
+  position: relative;
+  margin-top: 5px;
+  text-align: center;
+  font-size: 10px;
+  color: #555;
+}
+
+/* Camera distribution chart */
+.camera-distribution {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.camera-stat {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.camera-label {
+  width: 80px;
+  font-size: 12px;
+  text-align: right;
+  margin-right: 10px;
+  color: #555;
+}
+
+.camera-bar-container {
+  flex: 1;
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.camera-bar {
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.camera-count {
+  position: absolute;
+  right: 5px;
+  font-size: 11px;
+  color: #333;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Line chart styles */
+.line-chart {
+  height: 200px;
+  width: 100%;
+  padding: 10px;
+  position: relative;
+  border-bottom: 1px solid #ddd;
+}
+
+.line-point {
+  width: 12px;
+  height: 12px;
+  background-color: #e74c3c;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(-50%, 50%);
+  z-index: 2;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.line-point:hover .point-tooltip {
+  display: block;
+}
+
+.point-tooltip {
+  display: none;
+  position: absolute;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.line-path {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.chart-labels {
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.day-label {
+  position: absolute;
+  font-size: 11px;
+  transform: translateX(-50%);
+  color: #555;
+}
