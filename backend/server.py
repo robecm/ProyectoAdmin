@@ -2,10 +2,15 @@ import os
 import csv
 import threading
 import time
+import sqlitecloud
 from datetime import datetime
 from flask import Flask, Response, jsonify
 import cv2
 import numpy as np
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
 
 app = Flask(__name__)
 
@@ -29,6 +34,24 @@ os.makedirs(SUMMARY_EXPORT_DIR, exist_ok=True)
 #       ...
 #   }
 # }
+
+# URL de conexión a SQLite en la nube
+DATABASE_URL = "sqlitecloud://cbefqdkahz.g5.sqlite.cloud:8860/chinook.sqlite?apikey=vBkbpoGk9CbdqzO93GadQhUQSUte5zjmev5ahX94f0I"  
+engine = create_engine(DATABASE_URL)
+Base = declarative_base()
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Modelo de la base de datos
+class Detection(Base):
+    __tablename__ = "detections"
+    id = Column(Integer, primary_key=True, index=True)
+    camera_id = Column(String, index=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    person_count = Column(Integer)
+
+# Crear las tablas si no existen
+Base.metadata.create_all(bind=engine)
+
 summary = {}  # Maps date -> camera_id -> hour ("HH") -> int
 
 # ----- Person detector setup -----
@@ -118,6 +141,8 @@ def log_and_export_summary():
     """
     global summary, detection_counts
     last_date_str = None
+    db = SessionLocal()  # Crear una sesión de base de datos
+    #try:
     while True:
         now = datetime.now()
         date_str = now.strftime("%Y-%m-%d")
@@ -132,6 +157,12 @@ def log_and_export_summary():
         # Add the current detection counts for each camera into the current hour
         for cam, count in detection_counts.items():
             summary[date_str][cam][hour_str] += count
+
+            # Guardar en la base de datos
+            detection = Detection(camera_id=cam, person_count=count)
+            db.add(detection)
+        db.commit()
+
 
         # Prepare & write the CSV
         csv_path = os.path.join(SUMMARY_EXPORT_DIR, f"summary_{date_str}.csv")
@@ -151,6 +182,24 @@ def log_and_export_summary():
         if sleep_secs < 0.5:
             sleep_secs = 0.5
         time.sleep(sleep_secs)
+    #finally:
+        db.close()
+
+
+
+@app.route('/detections')
+def get_detections():
+    db = SessionLocal()
+    try:
+        detections = db.query(Detection).all()
+        return jsonify([{
+            "id": d.id,
+            "camera_id": d.camera_id,
+            "timestamp": d.timestamp,
+            "person_count": d.person_count
+        } for d in detections])
+    finally:
+        db.close()
 
 if __name__ == '__main__':
     # Start the background summary logger thread
